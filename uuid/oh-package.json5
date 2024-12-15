@@ -1,0 +1,12 @@
+{
+  "name": "ohuuid",
+  "version": "0.0.1",
+  "description": "uuid tools.",
+  "main": "Index.ets",
+  "author": "niuhuan",
+  "license": "Apache-2.0",
+  "packageType": "InterfaceHar",
+  "homepage": "https://github.com/niuhuan/ohuuid",
+  "dependencies": {
+  }
+}

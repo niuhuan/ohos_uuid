@@ -39,7 +39,7 @@
     },
     {
       "name": "ohuuid",
-      "srcPath": "./uuid",
+      "srcPath": "./ohuuid",
       "targets": [
         {
           "name": "default",

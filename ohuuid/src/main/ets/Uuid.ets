@@ -1,3 +1,5 @@
+import { hash } from '@kit.CoreFileKit';
+
 const hexChars = "0123456789abcdef"
 
 export interface UuidInterface {
@@ -28,13 +30,13 @@ export class Uuid implements UuidInterface {
     uuidStr = uuidStr.toLowerCase();
     let buffer = new ArrayBuffer(16);
     const view = new DataView(buffer);
-    for (let i = 0; i < buffer.byteLength; i++) {
+    for (let i = 0; i < uuidStr.length; i += 2) {
       let high = uuidStr.charAt(i);
       let low = uuidStr.charAt(i + 1);
       let highValue = hexChars.indexOf(high);
       let lowValue = hexChars.indexOf(low);
-      let idxValue = (highValue << 4) | (lowValue);
-      view.setUint8(i, idxValue);
+      let idxValue = (highValue << 4) | lowValue;
+      view.setUint8(i / 2, idxValue & 0xFF);
     }
     let dataArray = new Uint8Array(buffer);
     return new Uuid(dataArray);
@@ -46,6 +48,14 @@ export class Uuid implements UuidInterface {
 
   public static v4Instance(): UuidV4 {
     return new UuidV4();
+  }
+
+  public static v3(namespace: UuidInterface, name: ArrayBuffer): string {
+    return Uuid.v3Instance(namespace, name).toString();
+  }
+
+  public static v3Instance(namespace: UuidInterface, name: ArrayBuffer): Uuid {
+    return new UuidV3(namespace, name);
   }
 
   toString(): string {
@@ -95,5 +105,22 @@ export class UuidV4 extends Uuid {
     view.setUint8(6, view.getUint8(6) & 0x4F | 0x40);
     view.setUint8(8, view.getUint8(8) & 0xBF | 0x80);
     return new Uint8Array(buffer);
+  }
+}
+
+export class UuidV3 extends Uuid {
+  constructor(namespace: UuidInterface, name: ArrayBuffer) {
+    super(UuidV3.generate(namespace, name))
+  }
+
+  static generate(namespace: UuidInterface, name: ArrayBuffer): Uint8Array {
+    const hashStream = hash.createHash("md5");
+    hashStream.update(namespace.data.buffer);
+    hashStream.update(name);
+    const digest = hashStream.digest();
+    const data = Uuid.parse(digest).data;
+    data[6] = (data[6] & 0x0f) | 0x30;
+    data[8] = (data[8] & 0x3f) | 0x80;
+    return data;
   }
 }

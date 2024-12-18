@@ -32,5 +32,14 @@ export default function abilityTest() {
       let v3 = Uuid.v3(NameSpaces.DNS, view.buffer)
       hilog.info(0x0000, 'testTag', '%{public}s', `v3 ${v3}`);
     })
+    it('v5', 0, () => {
+      let buffer = new ArrayBuffer(3);
+      let view = new DataView(buffer);
+      view.setUint8(0, 49);
+      view.setUint8(1, 50);
+      view.setUint8(2, 51);
+      let v5 = Uuid.v5(NameSpaces.DNS, view.buffer)
+      hilog.info(0x0000, 'testTag', '%{public}s', `v5 ${v5}`);
+    })
   })
 }

@@ -1,12 +1,21 @@
 {
   "name": "ohuuid",
-  "version": "0.0.1",
-  "description": "uuid tools.",
+  "version": "0.0.2",
+  "description": "鸿蒙NEXT原生UUID工具",
   "main": "Index.ets",
   "author": "niuhuan",
   "license": "Apache-2.0",
   "packageType": "InterfaceHar",
   "homepage": "https://github.com/niuhuan/ohuuid",
   "dependencies": {
-  }
+  },
+  "tags": [
+    "Tools"
+  ],
+  "keywords": [
+    "OpenHarmony",
+    "HarmonyOS",
+    "UUID",
+    "uuid",
+  ]
 }

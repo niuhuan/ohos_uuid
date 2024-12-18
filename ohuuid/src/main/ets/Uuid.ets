@@ -58,6 +58,14 @@ export class Uuid implements UuidInterface {
     return new UuidV3(namespace, name);
   }
 
+  public static v5(namespace: UuidInterface, name: ArrayBuffer): string {
+    return Uuid.v5Instance(namespace, name).toString();
+  }
+
+  public static v5Instance(namespace: UuidInterface, name: ArrayBuffer): Uuid {
+    return new UuidV5(namespace, name);
+  }
+
   toString(): string {
     let hex = "";
     for (let i = 0; i < this._data.length; i++) {
@@ -119,7 +127,24 @@ export class UuidV3 extends Uuid {
     hashStream.update(name);
     const digest = hashStream.digest();
     const data = Uuid.parse(digest).data;
-    data[6] = (data[6] & 0x0f) | 0x30;
+    data[6] = (data[6] & 0x0F) | 0x30;
+    data[8] = (data[8] & 0x3F) | 0x80;
+    return data;
+  }
+}
+
+export class UuidV5 extends Uuid {
+  constructor(namespace: UuidInterface, name: ArrayBuffer) {
+    super(UuidV5.generate(namespace, name))
+  }
+
+  static generate(namespace: UuidInterface, name: ArrayBuffer): Uint8Array {
+    const hashStream = hash.createHash("sha1");
+    hashStream.update(namespace.data.buffer);
+    hashStream.update(name);
+    const digest = hashStream.digest();
+    const data = Uuid.parse(digest.slice(0, 32)).data;
+    data[6] = (data[6] & 0x0f) | 0x50;
     data[8] = (data[8] & 0x3f) | 0x80;
     return data;
   }
